@@ -2,6 +2,12 @@ from user.models import CustomUser
 from driver.models import Driver
 from manager.models import Manager
 
+def is_manager(user: CustomUser) -> bool:
+    return user.role == 1
+
+def is_driver(user: CustomUser) -> bool:
+    return user.role == 2
+
 def get_user_obj(**data):
     try:
         user = CustomUser.objects.get(**data)
