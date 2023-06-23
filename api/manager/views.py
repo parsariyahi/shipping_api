@@ -5,14 +5,18 @@ from rest_framework import status
 from .models import Manager
 from .serializers import ManagerSerializer
 
+from user.serializers import UserSerializer
+
 @api_view(["POST"])
 def add_manager(request):
-    serializer = ManagerSerializer(data=request.data)
+    request.data["role"] = 1
+    serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
         serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
 
-    return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])

@@ -2,17 +2,21 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from driver.models import Driver
-from driver.serializers import DriverSerializer
+from .models import Driver
+from .serializers import DriverSerializer
+
+from user.serializers import UserSerializer
 
 @api_view(["POST"])
 def add_driver(request):
-    serializer = DriverSerializer(data=request.data)
+    request.data["role"] = 2
+    serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
         serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
 
-    return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
