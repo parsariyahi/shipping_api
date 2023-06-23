@@ -6,7 +6,7 @@ from .models import Order
 from .serializers import OrderSerializer
 
 from user.models import CustomUser
-from api.globals import token_finder, authenticate, get_user_obj
+from api.globals import token_finder, authenticate, get_user_obj, is_manager
 
 @api_view(["POST"])
 def add_order(request):
@@ -15,6 +15,9 @@ def add_order(request):
     user = get_user_obj(username=username)
 
     if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    if not is_manager(user):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     auth_token = request.headers.get("Authorization")
@@ -35,6 +38,9 @@ def get_order(request, pk):
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
+    if not is_manager(user):
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     auth_token = request.headers.get("Authorization")
     token = token_finder(auth_token)
     if not authenticate(user, token):
@@ -49,6 +55,9 @@ def list_orders(request):
     username = request.headers.get("UserName")
     user = get_user_obj(username=username)
     if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    if not is_manager(user):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     auth_token = request.headers.get("Authorization")
