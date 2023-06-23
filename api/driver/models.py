@@ -3,5 +3,6 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Driver:
+class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.RESTRICT)
+    token = models.CharField(max_length=250)
