@@ -4,7 +4,7 @@ from driver.models import Driver
 
 class Carry(models.Model):
     order = models.OneToOneField(Order, on_delete=models.RESTRICT)
-    driver = models.ForeignKey(Driver, on_delete=models.RESTRICT)
+    driver = models.ForeignKey(Driver, on_delete=models.RESTRICT, blank=True)
     carry_at = models.DateTimeField(auto_now=True)
     delivered = models.BooleanField(default=False)
     delivered_at = models.DateTimeField(null=True, blank=True)
