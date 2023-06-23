@@ -8,3 +8,4 @@ User = get_user_model()
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.RESTRICT)
     token = models.CharField(max_length=250)
+    is_free = models.BooleanField(default=True)
