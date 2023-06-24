@@ -8,9 +8,30 @@ from .models import Carry
 from .serializers import CarrySerializer
 
 from user.models import CustomUser
+from order.models import Order
 from driver.models import Driver
-from api.globals import token_finder, authenticate, get_user_obj, is_manager, is_driver
+from api.globals import token_finder, authenticate, get_user_obj, is_manager, is_driver, get_driver_location, distance
 
+
+def nearest_driver(src_lat, src_long):
+    drivers = Driver.objects.filter(is_free=True)
+    driver_location_map = {}
+
+    for driver in drivers:
+        lat, long = get_driver_location(driver.id)
+        driver_location_map[driver.id] = (lat, long)
+
+    nearest = 0
+    prev_dist = 0
+    for driver, location in driver_location_map.items():
+        dist = distance(src_lat, location[0], src_long, location[1])
+        if not prev_dist:
+            prev_dist = dist
+        else:
+            if dist < prev_dist:
+                nearest = driver
+
+    return nearest
 
 @api_view(["POST"])
 def add_carry(request):
@@ -53,7 +74,8 @@ def add_carry_auto(request):
     if not authenticate(user, token):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    request.data["driver"] = Driver.objects.get(id=1)
+    order = Order.objects.get(id=request.data["order"])
+    request.data["driver"] = nearest_driver(order.src_lat, order.src_long)
 
     serializer = CarrySerializer(data=request.data)
     if serializer.is_valid():
