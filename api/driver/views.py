@@ -5,6 +5,8 @@ from rest_framework import status
 from .models import Driver
 from .serializers import DriverSerializer
 
+from carry.models import Carry
+from carry.serializers import CarrySerializer
 from user.serializers import UserSerializer
 
 @api_view(["POST"])
@@ -37,3 +39,10 @@ def list_drivers(request):
     serilizer = DriverSerializer(drivers, many=True)
 
     return Response(serilizer.data)
+
+@api_view(["GET"])
+def list_driver_carries(request, driver_id):
+    carries = Carry.objects.filter(driver=driver_id)
+    serializer = CarrySerializer(carries, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
