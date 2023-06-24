@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer
 
 from .models import Carry
 
-class DriverSerializer(ModelSerializer):
+class CarrySerializer(ModelSerializer):
 
     class Meta:
         model = Carry
