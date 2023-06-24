@@ -1,0 +1,8 @@
+version: '3'
+services:
+  web:
+    build: .
+    # command: sh -c "sleep 2s; python /api/manage.py migrate; python /api/manage.py runserver"
+    command: sh -c "python api/manage.py migrate; python api/manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
